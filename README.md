@@ -4,7 +4,7 @@
 
 #### Clone project
 
-`git@github.com:mubasir-umbi/nest_sample_crud.git`
+`git@github.com:mubasir-umbi/nestjs_sample_crud.git`
 
 #### Setup Database
 
