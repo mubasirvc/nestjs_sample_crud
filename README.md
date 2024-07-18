@@ -1,4 +1,4 @@
-# Sample crud application using nestJS and postgreSQL
+## Sample crud application using nestJS and postgreSQL in Hexagonal Architecture
 
 ### Project setup
 
