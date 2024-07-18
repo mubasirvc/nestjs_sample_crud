@@ -8,8 +8,7 @@ import { UserPostgreSQLRepository } from 'core/repositories/user/user.postgresql
       useClass: UserPostgreSQLRepository,
     },
   ],
-  exports: [
-    'UserRepository',
-  ],
+  exports: ['UserRepository']
 })
+
 export class RepositoryModule {}
