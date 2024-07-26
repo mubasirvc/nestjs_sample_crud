@@ -1,4 +1,4 @@
-import { IUser } from "core/repositoriess/user/user.interface";
+import { IUser } from "core/entities/user/user.interface";
 
 export interface UserRepositoryInterface {
 

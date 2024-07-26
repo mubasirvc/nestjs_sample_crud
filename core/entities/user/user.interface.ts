@@ -18,7 +18,7 @@ export class IUser {
 
   verificationKey?: string;
 
-  newPassword?: string;
+  password?: string;
 
   token?: string;
 }

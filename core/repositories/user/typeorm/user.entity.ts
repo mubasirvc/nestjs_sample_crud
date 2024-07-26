@@ -17,8 +17,8 @@ export class EUser {
   @Column()
   email: string;
 
-  @Column({ nullable: true }) 
-  newPassword: string | null;
+  @Column() 
+  password: string;
 
   @CreateDateColumn()
   createdTime: Date;

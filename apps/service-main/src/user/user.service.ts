@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { IUser } from 'core/repositoriess/user/user.interface';
+import { IUser } from 'core/entities/user/user.interface';
 import { UserRepositoryInterface } from 'core/repositories/user/user.repository.interface';
+import { hashPassword } from 'shared/services/password.util';
 
 @Injectable()
 export class UserService {
@@ -10,6 +11,9 @@ export class UserService {
   ) {}
 
   async createUser(body: IUser): Promise<IUser> {
+    const userExist = await this.respository.search({ email: body.email });
+    if (userExist.length > 0) return undefined;
+    body.password = await hashPassword(body.password);
     return await this.respository.add(body);
   }
 
@@ -29,6 +33,12 @@ export class UserService {
     userId: number,
     body: Partial<IUser>,
   ): Promise<IUser | undefined> {
+    const user = await this.respository.find(userId);
+    if (!user) return undefined;
+
+    if (body.password) {
+      body.password = await hashPassword(body.password);
+    }
     return await this.respository.update(userId, body);
   }
 

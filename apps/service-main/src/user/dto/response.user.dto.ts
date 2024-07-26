@@ -1,5 +1,5 @@
 import { ApiProperty, ApiResponseProperty } from '@nestjs/swagger';
-import { IUser } from 'core/repositoriess/user/user.interface';
+import { IUser } from 'core/entities/user/user.interface';
 
 class UserTitleDto {
   @ApiProperty({ type: [IUser] })

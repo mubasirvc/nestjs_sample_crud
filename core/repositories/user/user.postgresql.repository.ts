@@ -1,10 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { BasePostgreSQLRepository } from '../base.postgresql.repository';
-import { IUser } from 'core/repositoriess/user/user.interface';
 import { EUser } from './typeorm/user.entity';
 import { UserRepositoryInterface } from './user.repository.interface';
 import { FindOptionsWhere, ILike } from 'typeorm';
-import * as bcrypt from 'bcrypt';
+import { IUser } from 'core/entities/user/user.interface';
 
 @Injectable()
 export class UserPostgreSQLRepository
@@ -14,10 +13,6 @@ export class UserPostgreSQLRepository
   async add(user: IUser): Promise<IUser> {
     await this.init();
     const repository = this.dataSource().getRepository(EUser);
-    if (user.newPassword) {
-      const salt = await bcrypt.genSalt(10);
-      user.newPassword = await bcrypt.hash(user.newPassword, salt);
-    }
     const generatedEntity = await repository.save(this.toEntity(user));
     return this.fromEntity(generatedEntity);
   }
@@ -26,6 +21,7 @@ export class UserPostgreSQLRepository
     const output = new EUser();
     output.name = input.name;
     output.email = input.email;
+    output.password = input.password;
     return output;
   }
 
@@ -52,6 +48,14 @@ export class UserPostgreSQLRepository
       skip: offset,
     });
     return userEntity.map((EUser) => this.fromEntity(EUser));
+  }
+
+  private fromEntity(input: EUser): IUser {
+    return {
+      userId: input.userId,
+      name: input.name,
+      email: input.email,
+    };
   }
 
   async count(where: Partial<IUser> = {}): Promise<number> {
@@ -81,10 +85,6 @@ export class UserPostgreSQLRepository
   ): Promise<IUser | undefined> {
     await this.init();
     const repository = this.dataSource().getRepository(EUser);
-    if (fields.newPassword) {
-      const salt = await bcrypt.genSalt(10);
-      fields.newPassword = await bcrypt.hash(fields.newPassword, salt);
-    }
     await repository.update({ userId }, this.toPartialEntity(fields));
     return await this.find(userId);
   }
@@ -100,15 +100,7 @@ export class UserPostgreSQLRepository
     const output = new EUser();
     output.name = input?.name;
     output.email = input?.email;
-    output.newPassword = input.newPassword;
+    output.password = input?.password;
     return output;
-  }
-
-  private fromEntity(input: EUser): IUser {
-    return {
-      userId: input.userId,
-      name: input.name,
-      email: input.email,
-    };
   }
 }

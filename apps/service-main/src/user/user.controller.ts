@@ -13,7 +13,6 @@ import { UserService } from './user.service';
 import { SingleOutput } from 'shared/output/single-output';
 import { ErrorOutput } from 'shared/output/error-output';
 import { ListOutput } from 'shared/output/list-output';
-import { IUser } from 'core/repositoriess/user/user.interface';
 import { Response } from 'express';
 import { CreateUserDto } from './dto/create.user.dto';
 import { UpdateUserDto } from './dto/update.user.dto';
@@ -21,6 +20,7 @@ import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ResponseUser } from './dto/response.user.dto';
 import { GetParamUserDto, GetQueryUserDto } from './dto/get.user.dto';
 import { DeleteOutputDTO } from 'shared/output/dto/delete.output.dto';
+import { IUser } from 'core/entities/user/user.interface';
 
 @ApiTags('User')
 @Controller('user')
@@ -38,6 +38,9 @@ export class UserController {
   @Post('')
   async create(@Body() body: CreateUserDto, @Res() res: Response) {
     const user = await this.service.createUser(body);
+    if(!user){
+      return this.errorOutput.badRequestError(res, ['Email already exist.'])
+    }
     return this.singleOutput.single(res, user, 'user');
   }
 
@@ -89,6 +92,9 @@ export class UserController {
     @Res() res: Response,
   ) {
     const user = await this.service.updateUser(param.userId, body);
+    if (!user) {
+      return this.errorOutput.notFound(res, 'user');
+    }
     return this.singleOutput.single(res, user, 'user');
   }
 
