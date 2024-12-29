@@ -22,4 +22,3 @@
 
 run project
 nest start service-main
-
